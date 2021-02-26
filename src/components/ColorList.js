@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import EditMenu from './EditMenu'
+import { axiosWithAuth } from "../helpers/axiosWithAuth";
+import { useHistory } from 'react-router-dom';
 
 const initialColor = {
   color: "",
@@ -19,9 +20,27 @@ const ColorList = ({ colors, updateColors }) => {
   const saveEdit = e => {
     e.preventDefault();
 
+    axiosWithAuth()
+      .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then((res) => {
+        setEditing(false);
+        updateColors(
+          colors.map(
+            color => color.id === colorToEdit.id ? res.data : color
+          )
+        )
+      })
   };
 
   const deleteColor = color => {
+    axiosWithAuth()
+      .delete(`/api/colors/${color.id}`)
+      .then(() => {
+        updateColors(
+          colors.filter(i => i.id !== color.id)
+        )
+      })
+      .catch(err => console.log(err))
   };
 
   return (
@@ -32,11 +51,11 @@ const ColorList = ({ colors, updateColors }) => {
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+                e.stopPropagation();
+                deleteColor(color)
+              }
+              }>
+                x
               </span>{" "}
               {color.color}
             </span>
@@ -47,7 +66,7 @@ const ColorList = ({ colors, updateColors }) => {
           </li>
         ))}
       </ul>
-      { editing && <EditMenu colorToEdit={colorToEdit} saveEdit={saveEdit} setColorToEdit={setColorToEdit} setEditing={setEditing}/> }
+      { editing && <EditMenu colorToEdit={colorToEdit} saveEdit={saveEdit} setColorToEdit={setColorToEdit} setEditing={setEditing} />}
 
     </div>
   );

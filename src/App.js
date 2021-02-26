@@ -11,14 +11,14 @@ import Login from "./components/Login";
 import BubblePage from './components/BubblePage'
 //styles
 import "./styles.scss";
+import EditMenu from "./components/EditMenu";
 
 function App() {
 
   const logout = () => {
     axiosWithAuth()
       .post('api/logout')
-      .then(res => {
-        console.log(res)
+      .then(() => {
         localStorage.removeItem('token')
       })
       .catch(err => console.log(err))
@@ -30,9 +30,9 @@ function App() {
         <nav>
           <Link to="/login">Login</Link>
           <Link onClick={logout} to="/login">Logout</Link>
-          <Link to="/protected">Protected Page</Link>
+          <Link to="/bubble-page">Bubble Page</Link>
         </nav>
-        <PrivateRoute path="/protected" component={BubblePage} />
+        <PrivateRoute path="/bubble-page" component={BubblePage} />
         <Route exact path="/login" component={Login} />
       </div>
     </Router>
