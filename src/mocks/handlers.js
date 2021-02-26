@@ -96,19 +96,30 @@ export const handlers = [
   // Handles a POST /login request
   rest.post(`${urlBase}/login`, (req, res, ctx) => {
     const { username, password } = req.body;
-    if (username === "Lambda School" && password === "i<3Lambd4") {
+    if (username === "admin" && password === "password") {
       return res(
-          ctx.status(200),
-          ctx.json({
-              payload: token,
-          }))
+        ctx.status(200),
+        ctx.json({
+          payload: token,
+        }))
     } else {
-        return res(
-            ctx.status(403),
-            ctx.json({ error: "Username or Password incorrect. Please see Readme" })
-        );
+      return res(
+        ctx.status(403),
+        ctx.json({ error: "Username or Password incorrect. Please see Readme" })
+      );
     }
   }),
+
+  // added a log out :)
+  rest.post(`${urlBase}/logout`, (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          payload: token,
+        })
+        )
+    }),
+
   // Handles a GET /user request
   rest.get(`${urlBase}/colors`, (req, res, ctx) => {
     if (authenticator(req)) {
@@ -133,7 +144,7 @@ export const handlers = [
       }
       nextId = nextId + 1;
       return res(
-        ctx.status(201), 
+        ctx.status(201),
         ctx.json(colors)
       );
     } else {
